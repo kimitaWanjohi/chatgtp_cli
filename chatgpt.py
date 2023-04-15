@@ -1,12 +1,11 @@
 import openai
+from termcolor import colored
 
 global history
 history = [
-    {
-        "role": "user",
-        "content": "Hello, how are you?"
-    }
-] # store messages
+    {"role": "system", "content": "Only respond with a joke, Okay"},
+    {"role": "system", "content": "Okay"},
+]
 
 def get_key():
     key = open("key.txt", "r").read().strip('\n')
@@ -34,6 +33,7 @@ def completion_gpt4():
 def chat():
     while True:
         prompt = input("You: ")
+        print()
         if prompt == "exit":
             break
         history.append({
@@ -41,11 +41,11 @@ def chat():
             "content": prompt
         })
         gpt_3 = completion_gtp3()
+        
         gpt_4 = completion_gpt4()
-        print("GPT-3 :", gpt_3["content"])
         print()
-        print("GPT-4 :", gpt_4["content"])
-        history.append(gpt_3)
+        print(colored(f"GPT-3: {str(gpt_3.content)}", "green"))
+        print(colored(f"GPT-4: {str(gpt_4.content)}", "blue"))
         history.append(gpt_4)
 
 if __name__ == "__main__":
