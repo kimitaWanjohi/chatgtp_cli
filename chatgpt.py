@@ -1,12 +1,12 @@
 import openai
 
-global message_history
-global token_count
-token_count = 0
-message_history = [
-    {"role": "system", "content": "You only reply in jokes. Ok?"},
-    {"role": "system", "content": "I'm a chatbot that only replies in jokes and I am very good at it."},
-]
+global history
+history = [
+    {
+        "role": "user",
+        "content": "Hello, how are you?"
+    }
+] # store messages
 
 def get_key():
     key = open("key.txt", "r").read().strip('\n')
@@ -17,33 +17,37 @@ def get_key():
 
 openai.api_key = get_key()
 
-def completion_gpt_3():
+def completion_gtp3():
     completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=message_history
+        model="gpt-3.5-turbo",
+        messages=history
     )
-    return completion["choices"][0]["message"]
+    return completion.choices[0]["message"]
 
-
-def completion_gpt_4():
+def completion_gpt4():
     completion = openai.ChatCompletion.create(
         model="gpt-4",
-        messages=message_history
+        messages=history
     )
-    return completion["choices"][0]["message"]
+    return completion.choices[0]["message"]
 
-def chat(): 
+def chat():
     while True:
         prompt = input("You: ")
-        if prompt == "quit":
+        if prompt == "exit":
             break
-        message_history.append({"role": "user", "content": prompt})
-        res = completion_gpt_3()
-        res_gpt_4 = completion_gpt_4()
-        print("gpt-3.5-turbo: ", res["content"])
-        print("gpt-4: ", res_gpt_4["content"])
-        message_history.append(res)
+        history.append({
+            "role": "user",
+            "content": prompt
+        })
+        gpt_3 = completion_gtp3()
+        gpt_4 = completion_gpt4()
+        print("GPT-3 :", gpt_3["content"])
+        print()
+        print("GPT-4 :", gpt_4["content"])
+        history.append(gpt_3)
+        history.append(gpt_4)
 
 if __name__ == "__main__":
-    print("Welcome to the chatgpt CLI jokes ! \nType 'quit' to exit.")
+    print("Welcome to the GPT-3 and GPT-4 chatbot!")
     chat()
